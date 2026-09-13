@@ -3,7 +3,8 @@ node_modules/
 
 # build output
 dist/
-lib/
+/lib/
+functions/lib/
 *.tsbuildinfo
 
 # firebase
