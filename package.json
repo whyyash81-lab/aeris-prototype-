@@ -1,0 +1,23 @@
+{
+  "name": "aeris",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AERIS — an environmental early-warning dashboard prototype (flood, fire, pollution)",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "sim": "npm --prefix simulator run start",
+    "functions:build": "npm --prefix functions run build",
+    "functions:serve": "npm --prefix functions run serve",
+    "deploy": "firebase deploy",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:functions": "firebase deploy --only functions"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.30.0"
+  },
+  "allowScripts": {
+    "protobufjs@7.6.6": true,
+    "re2@1.26.1": true
+  }
+}

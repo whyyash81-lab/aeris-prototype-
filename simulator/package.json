@@ -1,0 +1,25 @@
+{
+  "name": "aeris-simulator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AERIS field-node simulator — pushes readings for 8 sensor nodes to Firestore",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "watch": "tsx watch src/index.ts",
+    "seed": "tsx seed-nodes.ts",
+    "simulate-nodes": "tsx simulate-nodes.ts",
+    "emtest": "tsx _emulator_test.ts",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "firebase-admin": "^13.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.23.13",
+    "typescript": "~5.9.3"
+  }
+}

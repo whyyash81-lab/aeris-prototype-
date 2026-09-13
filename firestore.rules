@@ -1,0 +1,31 @@
+rules_version = '2';
+
+// AERIS demo rules.
+//
+// The simulator and Cloud Functions write through the Admin SDK, which always
+// bypasses these rules. Clients (the dashboard) are strictly read-only here,
+// so every collection below allows reads and denies writes from the browser.
+//
+// Tighten the read rules (e.g. require auth for "alerts") before production.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Raw sensor readings pushed by the simulator.
+    match /readings/{readingId} {
+      allow read, get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    // Risk assessments / alerts written by the Cloud Function.
+    match /alerts/{alertId} {
+      allow read, get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    // Optional static node registry (positions, names) for future use.
+    match /nodes/{nodeId} {
+      allow read, get, list: if true;
+      allow create, update, delete: if false;
+    }
+  }
+}

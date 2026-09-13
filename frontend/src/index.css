@@ -1,0 +1,275 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  color-scheme: dark;
+  --radius: 0;
+
+  /* Overridable white/black tokens - Tailwind's `white` and `black` utilities
+     (text-white, bg-black, border-white/N, ...) resolve through these, so the
+     whole "opposite" light theme flips them in one place. */
+  --tw-white: #ffffff;
+  --tw-black: #000000;
+
+  /* Full black base, charcoal surfaces - held back from pure OLED black so structure stays readable */
+  --background: #000000;
+  --surface: #000000;
+  --surface-2: #0a0a0a;
+  --raised: #111111;
+  --card: #000000;
+  --card-foreground: #ffffff;
+
+  --foreground: #ffffff;
+  --muted: #0a0a0a;
+  --muted-foreground: #8a8a8a;
+  --secondary: #0a0a0a;
+  --secondary-foreground: #b3b3b3;
+  --accent: #111111;
+  --accent-foreground: #ffffff;
+
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
+
+  /* Arch Linux blue - the only non-critical accent */
+  --arch: #1793d1;
+
+  /* State - only critical gets color */
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --success: #ffffff;
+  --warning: #ffffff;
+  --high: #ffffff;
+  --critical: #ff3333;
+  --destructive: #ff3333;
+
+  /* Lines - visible on full black */
+  --border: #2a2a2a;
+  --border-strong: #3a3a3a;
+  --input: #2a2a2a;
+  --ring: #1793d1;
+  --grid-line: #2a2a2a;
+}
+
+/* ── Light theme - the exact inverse of the pure black theme ───────────── */
+:root.light {
+  color-scheme: light;
+  --tw-white: #161616;
+  --tw-black: #ffffff;
+
+  --background: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f4f4f2;
+  --raised: #ececea;
+  --card: #ffffff;
+  --card-foreground: #161616;
+
+  --foreground: #161616;
+  --muted: #f4f4f2;
+  --muted-foreground: #6e6e6c;
+  --secondary: #f4f4f2;
+  --secondary-foreground: #4a4a48;
+  --accent: #ececea;
+  --accent-foreground: #161616;
+
+  --popover: #ffffff;
+  --popover-foreground: #161616;
+
+  --arch: #1793d1;
+
+  --primary: #161616;
+  --primary-foreground: #ffffff;
+  --success: #161616;
+  --warning: #161616;
+  --high: #161616;
+  --critical: #ff3333;
+  --destructive: #ff3333;
+
+  --border: #d8d8d4;
+  --border-strong: #bdbdb8;
+  --input: #d8d8d4;
+  --ring: #1793d1;
+  --grid-line: #d8d8d4;
+}
+
+@theme inline {
+  --color-white: var(--tw-white);
+  --color-black: var(--tw-black);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-raised: var(--raised);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-high: var(--high);
+  --color-critical: var(--critical);
+  --color-arch: var(--arch);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-grid-line: var(--grid-line);
+
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --animate-accordion-down: accordion-down 0.15s ease-out;
+  --animate-accordion-up: accordion-up 0.15s ease-out;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html { @apply h-full; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  .numeric {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  ::selection { background: #1793d1; color: #ffffff; }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: #525252; }
+}
+
+/* Map - light grey monochrome tiles */
+.leaflet-container {
+  background: #d4d4d4;
+  font-family: var(--font-sans);
+  font-size: 11px;
+}
+
+.map-pure .leaflet-tile-pane {
+  filter: grayscale(1) brightness(1.06) contrast(0.95);
+}
+
+.leaflet-control-zoom {
+  border: 1px solid #262626 !important;
+  border-radius: 0 !important;
+  overflow: hidden;
+  box-shadow: none !important;
+}
+.leaflet-bar a {
+  background: #0a0a0a !important;
+  color: #737373 !important;
+  border-color: #1a1a1a !important;
+}
+.leaflet-bar a:hover {
+  background: #1793d1 !important;
+  color: #000000 !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(0,0,0,0.8) !important;
+  color: #404040 !important;
+  font-size: 8px !important;
+}
+.leaflet-control-attribution a { color: #525252 !important; }
+
+/* Pure popup */
+.leaflet-popup-content-wrapper {
+  background: #0a0a0a;
+  color: #ffffff;
+  border: 1px solid #262626;
+  border-radius: 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+.leaflet-popup-content { margin: 8px 12px; line-height: 1.4; }
+.leaflet-popup-tip { background: #0a0a0a; border: 1px solid #262626; }
+.leaflet-container a.leaflet-popup-close-button { color: #737373; }
+
+/* Light theme - flip the leaflet chrome (map tiles stay light-grey in both) */
+:root.light .leaflet-control-zoom { border-color: #d8d8d4; }
+:root.light .leaflet-bar a { background: #ffffff; color: #6e6e6c; border-color: #e4e4e0; }
+:root.light .leaflet-bar a:hover { background: #1793d1; color: #ffffff; }
+:root.light .leaflet-control-attribution { background: rgba(255,255,255,0.85); color: #8a8a86; }
+:root.light .leaflet-control-attribution a { color: #73736e; }
+:root.light .leaflet-popup-content-wrapper { background: #ffffff; color: #161616; border-color: #d8d8d4; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
+:root.light .leaflet-popup-tip { background: #ffffff; border-color: #d8d8d4; }
+:root.light .leaflet-container a.leaflet-popup-close-button { color: #8a8a86; }
+
+/* Critical pulse - only thing that moves */
+@keyframes critical-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.critical-only { animation: critical-pulse 1.5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .critical-only { animation: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Arch theme: bump all white/x Tailwind utilities so hairline dividers
+   are clearly visible on full-black. Unlayered CSS always wins over
+   @layer utilities in the cascade, so these apply globally.
+   ───────────────────────────────────────────────────────────────────── */
+.bg-white\/2 { background-color: rgb(255 255 255 / 0.06); }
+.bg-white\/3 { background-color: rgb(255 255 255 / 0.09); }
+.bg-white\/5 { background-color: rgb(255 255 255 / 0.14); }
+
+.border-white\/2 { border-color: rgb(255 255 255 / 0.07); }
+.border-white\/3 { border-color: rgb(255 255 255 / 0.10); }
+.border-white\/5 { border-color: rgb(255 255 255 / 0.18); }
+.border-white\/10 { border-color: rgb(255 255 255 / 0.26); }
+.border-white\/20 { border-color: rgb(255 255 255 / 0.38); }
+
+.divide-white\/5 { border-color: rgb(255 255 255 / 0.18); }
+.divide-white\/10 { border-color: rgb(255 255 255 / 0.26); }
+
+/* Light theme flip for the same hairlines - dark dividers on white */
+:root.light .bg-white\/2 { background-color: rgb(0 0 0 / 0.05); }
+:root.light .bg-white\/3 { background-color: rgb(0 0 0 / 0.07); }
+:root.light .bg-white\/5 { background-color: rgb(0 0 0 / 0.09); }
+
+:root.light .border-white\/2 { border-color: rgb(0 0 0 / 0.07); }
+:root.light .border-white\/3 { border-color: rgb(0 0 0 / 0.09); }
+:root.light .border-white\/5 { border-color: rgb(0 0 0 / 0.13); }
+:root.light .border-white\/10 { border-color: rgb(0 0 0 / 0.16); }
+:root.light .border-white\/20 { border-color: rgb(0 0 0 / 0.24); }
+
+:root.light .divide-white\/5 { border-color: rgb(0 0 0 / 0.13); }
+:root.light .divide-white\/10 { border-color: rgb(0 0 0 / 0.16); }
+
+/* Icon buttons - hover chip derives from the theme's ink token (flips with theme) */
+.icon-btn:hover {
+  background-color: color-mix(in oklab, var(--tw-white) 14%, transparent);
+}
