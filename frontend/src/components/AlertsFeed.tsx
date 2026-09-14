@@ -19,9 +19,14 @@ export function AlertsFeed({
   alerts,
   onSelectNode,
 }: { alerts: AlertDoc[]; onSelectNode?: (nodeId: string) => void }) {
-  const [filter, setFilter] = useState<LevelFilter>("warning");
-  const minIndex = filter === "all" ? 0 : RISK_ORDER.indexOf(filter);
-  const filtered = useMemo(() => alerts.filter((a) => RISK_ORDER.indexOf(a.riskLevel) >= minIndex), [alerts, minIndex]);
+  const [filter, setFilter] = useState<LevelFilter>("all");
+  /** Exact severity match per tab — "NORMAL" shows only normal, etc. (a
+   *  threshold comparison previously made the NORMAL tab identical to ALL and
+   *  hid the ability to isolate a single level except CRITICAL). */
+  const filtered = useMemo(
+    () => alerts.filter((a) => filter === "all" || a.riskLevel === filter),
+    [alerts, filter]
+  );
 
   return (
     <div className="flex h-full flex-col">

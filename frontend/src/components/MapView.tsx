@@ -58,11 +58,17 @@ export function MapView({
   selectedId,
   onSelect,
   focusKey,
+  onOpenDetail,
+  suppressed = false,
 }: {
   nodes: LiveNode[];
   selectedId: string | null;
   onSelect: (id: string) => void;
   focusKey?: string | null;
+  onOpenDetail?: (id: string) => void;
+  /** While the node-insights drawer is open: unmount any open popup and make
+   *  the map non-interactive so the overlay is the only "active" surface. */
+  suppressed?: boolean;
 }) {
   const center = useMemo<[number, number]>(() => {
     if (!nodes.length) return FALLBACK_CENTER;
@@ -72,7 +78,10 @@ export function MapView({
   }, [nodes]);
 
   return (
-    <div className="relative h-full w-full">
+    // z-0 traps every leaflet pane (which use z-index up to ~1000 internally)
+    // inside this wrapper's stacking context, so a stray popup can never
+    // paint above the drawer overlay (z-40) even if one were left open.
+    <div className={`relative z-0 h-full w-full ${suppressed ? "pointer-events-none" : ""}`}>
       <MapContainer center={center} zoom={10} className="map-pure h-full w-full" minZoom={4}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -129,7 +138,8 @@ export function MapView({
                 }}
                 eventHandlers={{ click: () => onSelect(node.id) }}
               >
-                <Popup minWidth={200} maxWidth={240}>
+                {!suppressed && (
+                  <Popup minWidth={200} maxWidth={240}>
                   <div className="w-[200px] text-[11px]">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium">{node.name}</span>
@@ -165,9 +175,10 @@ export function MapView({
                         <div className="font-mono numeric">{node.confidence != null ? Math.round(node.confidence * 100) : "—"}%</div>
                       </div>
                     </div>
-                    <Button size="sm" variant="outline" className="mt-2 w-full" onClick={() => onSelect(node.id)}>Open trend</Button>
+                    <Button size="sm" variant="outline" className="mt-2 w-full" onClick={() => onOpenDetail?.(node.id)}>Open trend</Button>
                   </div>
-                </Popup>
+                  </Popup>
+                )}
               </CircleMarker>
             </Fragment>
           );

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 
 export function EmptyState({ configured, error }: { configured: boolean; error: string | null }) {
+  const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID ?? "?";
   return (
     <div className="flex h-full items-center justify-center px-6">
       <div className="w-full max-w-md text-center">
@@ -9,13 +10,13 @@ export function EmptyState({ configured, error }: { configured: boolean; error: 
         </div>
         <p className="text-sm text-zinc-500 leading-relaxed mb-4">
           {!configured
-            ? `Create <code class="bg-white/5 px-1 font-mono text-[10px]">frontend/.env</code> from <code class="bg-white/5 px-1 font-mono text-[10px]">frontend/.env.example</code> with Firebase config, then restart <code class="bg-white/5 px-1 font-mono text-[10px]">npm run dev</code>.`
+            ? "Create frontend/.env from frontend/.env.example with Firebase config, add the same VITE_* values to Vercel, and redeploy."
             : error
-            ? `Check Firestore is enabled for <code class="bg-white/5 px-1 font-mono text-[10px]">{import.meta.env.VITE_FIREBASE_PROJECT_ID}</code> and you are online.`
-            : "No readings yet. Start the simulator."}
+            ? `${projectId} — Firestore listener error, see the red text below. Security rules make reads public, so this is a connectivity or config problem, not a permissions one.`
+            : `${projectId} — connected, but no readings or alerts yet. The demo data currently lives in the LOCAL emulator, not here. Feed this project (simulator pointed at production + Cloud Functions deployed) to see data.`}
         </p>
         {error && (
-          <pre className="mb-4 text-[10px] font-mono text-critical bg-white/2 p-3 text-left overflow-auto">{error}</pre>
+          <pre className="mb-4 text-[10px] font-mono text-critical bg-white/2 p-3 text-left overflow-auto whitespace-pre-wrap">{error}</pre>
         )}
         <Button variant="outline" size="sm" onClick={() => window.location.reload()}>Reload</Button>
       </div>
