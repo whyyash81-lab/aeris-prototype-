@@ -15,7 +15,7 @@
  * The seeding logic is exported (seedNodes) so ./_emulator_test.ts can reuse it.
  */
 
-import "dotenv/config";
+import "./src/env.js";
 import { applicationDefault, initializeApp, type AppOptions } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { pathToFileURL } from "node:url";

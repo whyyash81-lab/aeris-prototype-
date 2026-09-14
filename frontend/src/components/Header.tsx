@@ -6,15 +6,38 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ArchMark } from "@/components/Logo";
 import { LogOut } from "lucide-react";
 
+type ConnState = "live" | "connecting" | "empty" | "error";
+
+const CONN_DOT: Record<ConnState, string> = {
+  live: "bg-arch",
+  connecting: "bg-zinc-600 animate-pulse",
+  empty: "bg-zinc-600",
+  error: "bg-critical",
+};
+const CONN_TEXT: Record<ConnState, string> = {
+  live: "text-white",
+  connecting: "text-zinc-500",
+  empty: "text-zinc-500",
+  error: "text-critical",
+};
+const CONN_LABEL: Record<ConnState, string> = {
+  live: "live",
+  connecting: "connecting",
+  empty: "no data",
+  error: "error",
+};
+
 export function Header({
   live,
   lastUpdated,
   onSignOut,
+  conn: connProp,
   ...push
 }: {
   live: boolean;
   lastUpdated: number;
   onSignOut?: () => void;
+  conn?: "live" | "connecting" | "empty" | "error";
 } & PushState & { toggle: () => Promise<void> }) {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
@@ -28,6 +51,7 @@ export function Header({
   const lastSeen = lastUpdated
     ? new Date(lastUpdated).toLocaleTimeString("en-IN", { hour12: false })
     : null;
+  const conn: ConnState = connProp ?? (live ? "live" : "connecting");
 
   return (
     <header className="flex h-12 items-center justify-between border-b border-white/5 px-4">
@@ -41,10 +65,8 @@ export function Header({
         <PushToggle {...push} />
 
         <div className="flex items-center gap-2 text-xs font-mono">
-          <span className={cn("w-1.5 h-1.5 rounded-full", live ? "bg-arch" : "bg-zinc-600")} />
-          <span className={cn("uppercase tracking-wider", live ? "text-white" : "text-zinc-500")}>
-            {live ? "live" : "connecting"}
-          </span>
+          <span className={cn("w-1.5 h-1.5 rounded-full", CONN_DOT[conn])} />
+          <span className={cn("uppercase tracking-wider", CONN_TEXT[conn])}>{CONN_LABEL[conn]}</span>
         </div>
 
         <div className="w-px h-5 bg-white/5" />

@@ -22,7 +22,9 @@ import type {
 /** Newest alerts kept for the feed + per-node "latest state". */
 const ALERTS_WINDOW = 80;
 /** A node whose newest alert is older than this is shown grey/offline. */
-const STALE_MS = 20_000;
+const STALE_MS = 30_000;
+/** Re-derive online/offline state this often so nodes flip to "offline" as time passes. */
+const TICK_MS = 1_000;
 /** Give the listeners this long to deliver before the skeleton resolves anyway. */
 const CONNECT_TIMEOUT_MS = 12_000;
 
@@ -146,6 +148,8 @@ export function useAerisLive(): LiveState {
   /** true once that side delivered a real snapshot (proves the DB answered). */
   const okRef = useRef({ nodes: false, alerts: false });
   const errorRef = useRef<string | null>(null);
+  /** Signature of the last published node state — skip re-renders when nothing changed. */
+  const lastSigRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!db) {
@@ -212,7 +216,13 @@ export function useAerisLive(): LiveState {
         );
       }
 
-      setNodes(Array.from(out.values()).sort((a, b) => a.id.localeCompare(b.id)));
+      const arr = Array.from(out.values()).sort((a, b) => a.id.localeCompare(b.id));
+      const sig = arr
+        .map((n) => `${n.id}:${n.riskLevel}:${n.latestAt}:${n.score}`)
+        .join("|");
+      if (sig === lastSigRef.current) return;
+      lastSigRef.current = sig;
+      setNodes(arr);
     };
 
     timeout = setTimeout(() => {
@@ -227,8 +237,18 @@ export function useAerisLive(): LiveState {
       finish();
     }, CONNECT_TIMEOUT_MS);
 
+    // Live offline flip: re-derive each node's freshness on a tick so a node
+    // whose stream goes silent shows grey "offline" as time passes, without
+    // needing a new snapshot. (recompute is cheap and signature-gated above.)
+    const tick = setInterval(recompute, TICK_MS);
+
     const onError = (err: unknown) => {
-      errorRef.current = String((err as Error)?.message ?? err);
+      const fe = err as { code?: string; message?: string };
+      const code = fe?.code ?? "unknown";
+      const msg = fe?.message ?? String(err);
+      const label = code !== "unknown" ? `[${code}] ${msg}` : msg;
+      errorRef.current = label;
+      console.warn("[AERIS firestore] listener error", { code, message: msg });
     };
 
     const unsubNodes = onSnapshot(
@@ -274,6 +294,7 @@ export function useAerisLive(): LiveState {
     return () => {
       disposed = true;
       if (timeout) clearTimeout(timeout);
+      clearInterval(tick);
       unsubNodes();
       unsubAlerts();
     };
@@ -331,7 +352,10 @@ export function useNodeTrend(nodeId: string | null): {
         setLoading(false);
       },
       (err) => {
-        setError(String((err as Error)?.message ?? err));
+        const fe = err as { code?: string; message?: string };
+        const code = fe?.code ?? "unknown";
+        const msg = fe?.message ?? String(err);
+        setError(code !== "unknown" ? `[${code}] ${msg}` : msg);
         setLoading(false);
       }
     );

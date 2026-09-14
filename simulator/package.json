@@ -8,7 +8,11 @@
     "start": "tsx src/index.ts",
     "watch": "tsx watch src/index.ts",
     "seed": "tsx seed-nodes.ts",
+    "seed:local": "tsx seed-nodes.ts",
+    "seed:prod": "tsx seed-nodes.ts prod",
     "simulate-nodes": "tsx simulate-nodes.ts",
+    "simulate:local": "tsx simulate-nodes.ts",
+    "simulate:prod": "tsx simulate-nodes.ts prod",
     "emtest": "tsx _emulator_test.ts",
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit"

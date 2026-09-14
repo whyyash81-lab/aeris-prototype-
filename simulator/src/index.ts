@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "./env.js";
 import { applicationDefault, initializeApp, type AppOptions } from "firebase-admin/app";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { NODES, REGION } from "./nodes.js";

@@ -17,6 +17,7 @@ database-debug.log
 .env
 .env.*
 !.env.example
+!.env.prod.example
 service-account.json
 *.service-account.json
 *.pem
@@ -38,3 +39,4 @@ Thumbs.db
 # misc
 coverage/
 *.local
+run-prod.bat

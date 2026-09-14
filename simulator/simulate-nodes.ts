@@ -27,7 +27,7 @@
  * overrides, e.g. 127.0.0.1:8080).
  */
 
-import "dotenv/config";
+import "./src/env.js";
 import { applicationDefault, initializeApp, type AppOptions } from "firebase-admin/app";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { EVENT_CONFIG, NODES, REGION, type SensorNode } from "./src/nodes.js";
@@ -49,7 +49,7 @@ const RISING_TYPE: Record<Scenario, HazardType> = {
 };
 
 const projectId = process.env.FIREBASE_PROJECT_ID ?? "";
-const emulatorHost = process.env.FIRESTORE_EMULATOR_HOST ?? "127.0.0.1:8080";
+const emulatorHost = process.env.FIRESTORE_EMULATOR_HOST ?? "";
 
 if (!projectId) {
   console.error("✖ FIREBASE_PROJECT_ID is not set (see simulator/.env).");
@@ -271,7 +271,7 @@ function banner(): void {
   console.log(`\n${style(c.cyan, box)}`);
   console.log(`${style(c.cyan, "  AERIS · demo node simulator — 1 reading / node / 3s")}`);
   console.log(`${style(c.dim, `  project   : ${projectId}${style(c.dim, "")}`)}`);
-  console.log(`${style(c.dim, `  emulator  : ${emulatorHost}`)}`);
+  console.log(`${style(c.dim, `  emulator  : ${emulatorHost || "production (no emulator)"}`)}`);
   console.log(`${style(c.dim, `  nodes     : ${NODES.length} (${REGION}) — reused from seed-nodes.ts via ./src/nodes.ts`)}`);
   console.log(
     scenario
